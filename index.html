@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Zooming Fibonacci Spiral</title>
+  <style>
+    .container {
+      height: 10000px;
+    }
+    .c {
+      position: fixed;
+      left: 50%;
+      top: 50vh;
+      
+    }
+
+    .post {
+      transform-origin: top left;
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+  <h1>test</h1>
+  <div class="container"><div class="c"></div></div>
+
+  <script>
+    const numPosts = 20; // Adjust the number of posts as needed
+    const postSize = 600;
+
+    const wrapper = document.querySelector('.container');
+    wrapper.style.height=window.innerHeight+numPosts*postSize
+    const container = document.querySelector('.c');
+    // Generate posts and set their positions
+    let x = 0
+    let y = 0
+    let old = 0
+    let previous = 0
+    let current = 1
+    let fibs = []
+    let xs = []
+    let ys = []
+    for (let i = 0; i < numPosts; i++) {
+      const post = document.createElement('div');
+      post.classList.add('post');
+      post.textContent = `Post ${i + 1}`;
+      container.appendChild(post);
+
+      direction = i % 4
+      if (direction === 0){
+        y += previous
+      }
+      if (direction === 1){
+        x += previous
+        y -= old
+      }
+      if (direction === 2){
+        y -= current
+        x -= old
+      }
+      if (direction === 3){
+        x -= current
+      }
+
+      fibs.push(current)
+      xs.push(x)
+      ys.push(y)
+
+      post.style.scale = current
+      post.style.left = `${x * postSize}px`;
+      post.style.top = `${y * postSize}px`;
+      post.style.width = `${postSize}px`;
+      post.style.height = `${postSize}px`;
+      post.style.backgroundColor = `rgb(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255})`;
+
+      old = previous
+      previous = current 
+      current += old
+    }
+
+    console.log(fibs, xs, ys)
+
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const factor = scrollY / maxScroll
+      const zoomFactor = Math.pow(1.6, factor * numPosts)
+      console.log(zoomFactor, window.innerHeight * zoomFactor, window.innerWidth * zoomFactor)
+      container.style.scale = 1/zoomFactor
+    });
+  </script>
+</body>
+</html>
